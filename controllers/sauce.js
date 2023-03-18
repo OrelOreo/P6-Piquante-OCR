@@ -32,7 +32,7 @@ exports.getOneSauce = (req, res, next) => {
 // A voir avec le mentor
 exports.modifySauce = (req, res, next) => {
     const sauceObject = req.file ? {
-        ...JSON.parse(req.boy.sauce),
+        ...JSON.parse(req.body.sauce),
         imageUrl : `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body }
     delete sauceObject._userId
