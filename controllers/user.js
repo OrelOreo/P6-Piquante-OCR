@@ -1,6 +1,8 @@
+require('dotenv').config()
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
+const SECRET_TOKEN = process.env.SECRET_TOKEN
 
 // Fonction pour s'inscrire
 exports.signup = (req, res, next) => {
@@ -13,8 +15,8 @@ exports.signup = (req, res, next) => {
             })
             // Enregistre l'utilisateur dans la DB
             user.save()
-                .then(() => res.status(200).json({ message: "Utilisateur créé avec succès" }))
-                .catch(error => res.status(400).json({ error }))
+                .then(() => res.status(201).json({ message: "Utilisateur créé avec succès" }))
+                .catch(error => res.status(400).json({ error: "Paire identifiant / mot de passe incorrecte" }))
         })
         .catch(error => res.status(500).json({ error }))
 }
@@ -27,20 +29,18 @@ exports.login = (req, res, next) => {
         if (user === null) {
                 res.status(401).json({ message: "Paire identifiant / mot de passe incorrecte" })
             }
-            // Voir avec mentor pour le 2 ème argument de la fonction "compare"
-            else {
+             else {
                 bcrypt.compare(req.body.password, user.password)
                     .then(valid => {
                         if (!valid) {
-                            res.status(400).json({ message: "Paire identifiant / mot de passe incorrecte "})
-                        }
-                        // Voir avec mentor par rapport au RANDOM_TOKEN_SECRET
+                            res.status(401).json({ message: "Paire identifiant / mot de passe incorrecte "})
+                        }               
                         else {
                             res.status(200).json({
                                 userId: user._id,
                                 token: jwt.sign(
                                     { userId: user._id },
-                                    "RANDOM_TOKEN_SECRET",
+                                    SECRET_TOKEN,
                                     { expiresIn: "24h" }
                                 )
                             })

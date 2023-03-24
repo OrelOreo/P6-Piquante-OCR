@@ -11,9 +11,10 @@ const passwordDB = process.env.DB_PASSWORD
 
 mongoose.connect(`mongodb+srv://${usernameDB}:${passwordDB}@p6piquante.w0hraug.mongodb.net/?retryWrites=true&w=majority`)
     .then(() => console.log('Connected to MongoDB ! '))
-    .catch((error) => console.error('Error connecting to the MongoDB :/'))
+    .catch((error) => console.error(error,'Error connecting to the MongoDB :/'))
 
 const app = express()
+
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }))
 app.use(express.json())
